@@ -85,6 +85,7 @@ public class EstocasticoUniversal {
 	    	
 	        nuevo.setFitness(c.getFitness());
 	        nuevo.setCromosoma(c.getCromosoma());
+	        nuevo.setCromosomab(c.getCromosomab());
 	        nuevo.setPuntAcumulada(c.getPuntAcumulada());
 	        nuevo.getFenotipo();
 	                

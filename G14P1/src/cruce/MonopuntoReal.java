@@ -12,11 +12,13 @@ public class MonopuntoReal {
 	double probCruce;
 	int tamPoblacion;
 	Cromosoma[] poblacion;
+	int elit;
 	
-	public MonopuntoReal(double probCruce, int tamPoblacion, Cromosoma[] pob) {
+	public MonopuntoReal(double probCruce, int tamPoblacion, Cromosoma[] pob, int elit) {
 		this.probCruce = probCruce;
 		this.tamPoblacion = tamPoblacion;
 		this.poblacion = pob;
+		this.elit = elit;
 	}
 	
 	public void cruzar(TipoFuncion funcion) {
@@ -26,7 +28,7 @@ public class MonopuntoReal {
 		//seleccionamos los cromosomas a cruzar.
 		for(int i = 0; i < this.tamPoblacion; i++) {
 			double aleatorio = Math.random();
-			if(aleatorio < this.probCruce) { progenitores[i] = true;}
+			if(aleatorio < this.probCruce && i > elit) { progenitores[i] = true;}
 			else progenitores[i] = false;
 		}
 		

@@ -9,12 +9,14 @@ public class UniformeBooleana {
 	double probCruce, probUnif;
 	int tamPoblacion;
 	Cromosoma[] poblacion;
+	int elit;
 	
-	public UniformeBooleana(double probCruce, double probUnif, int tamPoblacion, Cromosoma[] pob) {
+	public UniformeBooleana(double probCruce, double probUnif, int tamPoblacion, Cromosoma[] pob, int elit) {
 		this.probCruce = probCruce;
 		this.probUnif = probUnif;
 		this.tamPoblacion = tamPoblacion;
 		this.poblacion = pob;
+		this.elit = elit;
 	}
 	
 	public void cruzar() {
@@ -24,7 +26,7 @@ public class UniformeBooleana {
 		//seleccionamos las cromosomas a cruzar
 		for(int i = 0; i < this.tamPoblacion; i++) {
 			double aleatorio = Math.random();
-			if(aleatorio < this.probCruce) { progenitores[i] = true;}
+			if(aleatorio < this.probCruce && i > elit) { progenitores[i] = true;}
 			else progenitores[i] = false;
 		}
 		

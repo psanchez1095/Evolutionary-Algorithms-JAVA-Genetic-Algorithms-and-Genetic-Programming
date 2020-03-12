@@ -11,11 +11,13 @@ public class AritmeticoReal {
 	double probCruce;
 	int tamPoblacion;
 	Cromosoma[] poblacion;
+	int elit;
 	
-	public AritmeticoReal(double probCruce, int tamPoblacion, Cromosoma[] pob) {
+	public AritmeticoReal(double probCruce, int tamPoblacion, Cromosoma[] pob, int elit) {
 		this.probCruce = probCruce;
 		this.tamPoblacion = tamPoblacion;
 		this.poblacion = pob;
+		this.elit = elit;
 	}
 	
 	public void cruzar() {
@@ -25,7 +27,7 @@ public class AritmeticoReal {
 		//seleccionamos las cromosomas a cruzar
 		for(int i = 0; i < this.tamPoblacion; i++) {
 			double aleatorio = Math.random();
-			if(aleatorio < this.probCruce) { progenitores[i] = true;}
+			if(aleatorio < this.probCruce && i > elit) { progenitores[i] = true;}
 			else progenitores[i] = false;
 		}
 		
@@ -57,10 +59,6 @@ public class AritmeticoReal {
 		
 		for(int i = 0; i < longCromosoma; i++) {
 			for(int j = 0 ; j < infoMadre.get(i).getAlelo().length; ++j) {
-				
-				
-				
-				
 
 					aux = infoMadre.get(i).getAlelo()[j];
 					infoMadre.get(i).setAleloExct((infoPadre.get(i).getAlelo()[j]+infoMadre.get(i).getAlelo()[j])/2, j);

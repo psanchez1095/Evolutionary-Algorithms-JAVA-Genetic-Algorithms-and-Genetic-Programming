@@ -25,11 +25,14 @@ public class Ruleta {
 			this.prob = Math.random();
 			this.posSuperviviente = 0;
 			
-			while((prob > this.pob[posSuperviviente].getPuntAcumulada())
-					&& (posSuperviviente < this.tamPob)) {
+			while((posSuperviviente < this.tamPob) && 
+					(prob > this.pob[posSuperviviente].getPuntAcumulada())) {
 				posSuperviviente++;
 			}
-			supervivientes[i] = posSuperviviente;
+			if(posSuperviviente < 99 )
+				supervivientes[i] = posSuperviviente;
+			else
+				supervivientes[i] = 99;
 		}
 		
 		for(int j = 0; j < this.tamPob; j++) {

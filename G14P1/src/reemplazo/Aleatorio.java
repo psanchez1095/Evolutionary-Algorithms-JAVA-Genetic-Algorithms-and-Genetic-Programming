@@ -15,12 +15,11 @@ public class Aleatorio {
 		this.reemplazos = reemplazos;
 	}
 	
-	public void reemplazar() {
-		int rand;
-		for(int i = this.reemplazos.size()-1; i >= 0 ; i--) {
-			rand = (int) (Math.random() * this.poblacion.length);
-			
-			this.poblacion[rand].setCromosoma(this.reemplazos.get(i).getCromosoma());
+	public Cromosoma[] reemplazar() {
+
+		for(int i = this.reemplazos.size()-1; i >= 0 ; i--) {		
+			this.poblacion[i].setCromosoma(this.reemplazos.get(i).getCromosoma());
 		}
+		return this.poblacion;
 	}
 }

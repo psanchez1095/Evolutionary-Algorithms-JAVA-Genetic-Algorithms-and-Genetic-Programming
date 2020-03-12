@@ -131,10 +131,16 @@ public class AlgoritmoGenetico {
 	public void evaluaPoblacion() {
 		double fitness, fitness_best, sum_fitness = 0;
 		int pos_fitness_best = 0;
-		fitness_best = fitness(this.poblacion[0]);
+		if (this.funcion == TipoFuncion.F1 ) {
+			fitness_best = 0;
+		}else {
+			fitness_best = 100;
+		}
+		
 		
 		for(int i = 0; i < this.poblacion.length-1; i++) {
 			fitness = fitness(this.poblacion[i]);
+
 			if((this.funcion == TipoFuncion.F1 && fitness >= fitness_best) || 
 			   (this.funcion != TipoFuncion.F1 && fitness < fitness_best))  
 			{
@@ -174,10 +180,6 @@ public class AlgoritmoGenetico {
 			EstocasticoUniversal estocastUniv = new EstocasticoUniversal(this.poblacion, this.tamPoblacion);
 			estocastUniv.seleccionEstocastico(this.funcion, this.precision, this.numGenes);
 			break;
-//		case RESTOS: 
-//			Restos restos = new Restos(this.poblacion, this.tamPoblacion, 0.5, 3);
-//			restos.seleccionRestos();
-//			break;
 		case RULETA: 
 			Ruleta ruleta = new Ruleta(this.poblacion, this.tamPoblacion);
 			ruleta.seleccionRuleta();
@@ -203,25 +205,26 @@ public class AlgoritmoGenetico {
 		switch(tipo_cruce) {
 		case MONOPUNTO: 
 			if(funcion != TipoFuncion.F4b) {
-				MonopuntoBooleano mp = new MonopuntoBooleano(this.probabilidadCruce, this.tamPoblacion, this.poblacion);
+				MonopuntoBooleano mp = new MonopuntoBooleano(this.probabilidadCruce, this.tamPoblacion, this.poblacion, (int)this.elitismo*this.tamPoblacion);
 				mp.cruzar(funcion);
 			}else {
-				MonopuntoReal mp = new MonopuntoReal(this.probabilidadCruce, this.tamPoblacion, this.poblacion);
+				MonopuntoReal mp = new MonopuntoReal(this.probabilidadCruce, this.tamPoblacion, this.poblacion, (int)this.elitismo*this.tamPoblacion);
 				mp.cruzar(funcion);
 			}
 			break;
 		case UNIFORME:
 			if(funcion != TipoFuncion.F4b) {
-				UniformeBooleana uni = new UniformeBooleana(this.probabilidadCruce, this.probabilidadUniforme, this.tamPoblacion, this.poblacion);
+				UniformeBooleana uni = new UniformeBooleana(this.probabilidadCruce, this.probabilidadUniforme, this.tamPoblacion, this.poblacion, (int)this.elitismo*this.tamPoblacion);
 				uni.cruzar();
 			}else {
-				UniformeReal uni = new UniformeReal(this.probabilidadCruce, this.probabilidadUniforme, this.tamPoblacion, this.poblacion);
+				UniformeReal uni = new UniformeReal(this.probabilidadCruce, this.probabilidadUniforme, this.tamPoblacion, this.poblacion, (int)this.elitismo*this.tamPoblacion);
 				uni.cruzar();
 			}
 			break;
 		case ARITMETICO:
 			if(funcion == TipoFuncion.F4b) {
-				AritmeticoReal arit = new AritmeticoReal(this.probabilidadCruce, this.tamPoblacion, this.poblacion);
+				AritmeticoReal arit = new AritmeticoReal(this.probabilidadCruce, this.tamPoblacion,
+						this.poblacion, (int)this.elitismo*this.tamPoblacion);
 				arit.cruzar();
 			}else {
 				
@@ -229,19 +232,19 @@ public class AlgoritmoGenetico {
 			break;
 		case BLX:
 			if(funcion == TipoFuncion.F4b) {
-				BLXReal blx = new BLXReal(this.probabilidadCruce, this.tamPoblacion, this.poblacion);
+				BLXReal blx = new BLXReal(this.probabilidadCruce, this.tamPoblacion, this.poblacion, (int)this.elitismo*this.tamPoblacion);
 				blx.cruzar();
 			}else {
 				
 			}
 			break;
 		default:
-			MonopuntoBooleano mono = new MonopuntoBooleano(this.probabilidadCruce, this.tamPoblacion, this.poblacion);
+			MonopuntoBooleano mono = new MonopuntoBooleano(this.probabilidadCruce, this.tamPoblacion, this.poblacion, (int)this.elitismo*this.tamPoblacion);
 			mono.cruzar(funcion);
 			break;
 		}
 		
-		for(int i = 0; i < this.tamPoblacion; i++ ) {
+		for(int i = (int)this.elitismo*this.tamPoblacion; i < this.tamPoblacion; i++ ) {
 			if(funcion == TipoFuncion.F4b) {
 				MutacionReal m = new MutacionReal(this.probabilidadMutacion, this.poblacion[i].getCromosomab());
 				m.mutar();
@@ -254,23 +257,28 @@ public class AlgoritmoGenetico {
 	
 	public void seleccionaElite() {
     	int num_elites = (int) (this.tamPoblacion * this.elitismo);
-    	this.ordenarPoblacion(0, this.tamPoblacion-1);
-    	this.elite.clear();
+    	if (num_elites > this.tamPoblacion) num_elites = this.tamPoblacion;
+    	if (num_elites != this.tamPoblacion) {
+    		this.ordenarPoblacion(0, this.tamPoblacion-1);
+        	this.elite.clear();
 
-        if (this.funcion == TipoFuncion.F1) {
-            for (int i = 1 ; i <= num_elites; i++)
-                    this.elite.add(duplicarCromosoma(this.poblacion[this.tamPoblacion-i]));
-        }
+            if (this.funcion == TipoFuncion.F1) {
+                for (int i = 1 ; i <= num_elites; i++)
+                        this.elite.add(duplicarCromosoma(this.poblacion[this.tamPoblacion-i]));
+            }
 
-        else {
-            for (int i = 0 ; i < num_elites; i++)
-                    this.elite.add(duplicarCromosoma(this.poblacion[i]));
-        }
+            else {
+                for (int i = 0 ; i < num_elites; i++)
+                        this.elite.add(duplicarCromosoma(this.poblacion[i]));
+            }
+    	}
+    	
 	}
 	
 	public void incluyeElite() {
-		Aleatorio al = new Aleatorio(this.poblacion, this.elite);
-		al.reemplazar();
+		for(int i = 0; i < this.elite.size() ; i++) {		
+			this.poblacion[i] = elite.get(i);
+		}
 	}
 	
 	/**
