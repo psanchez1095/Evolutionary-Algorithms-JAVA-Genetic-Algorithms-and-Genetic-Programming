@@ -11,6 +11,8 @@ import javax.swing.*;
 import utils.*;
 import algoritmoGenetico.AlgoritmoGenetico;
 import algoritmoGenetico.Main;
+import cromosoma.Cromosoma;
+
 
 
 
@@ -385,14 +387,29 @@ public class Vista extends javax.swing.JFrame {
                 								  tamPoblacion, numGeneraciones, numGenes, 
                 								  probabilidadCruce, probabilidadMutacion, probabilidadUniforme,
                 								  precision, elitismo);
+        int tam_elite = 0;
+        		
+        if (algoritmo.getBooleanElite()) {
+        			// Extraemos los mejores individuos de la población (hacemos una copia)
+        			tam_elite = algoritmo.getNumElites();
+        }
+        
 		algoritmo.inicializaPoblacion();
 		algoritmo.evaluaPoblacion();
+		
 		for (int i = 0; i < numGeneraciones; i++) {
-			algoritmo.seleccionaElite();
+			
+			if(algoritmo.getBooleanElite()) {
+				algoritmo.seleccionaElite();
+			}
+			
 			algoritmo.seleccionaPoblacion();
 			algoritmo.reproducePoblacion();
+			
+			if(algoritmo.getBooleanElite()) {
 			algoritmo.incluyeElite();
-                     
+			}   
+			
 			algoritmo.evaluaPoblacion();
 			algoritmo.aumentaGeneracion();
 			

@@ -28,12 +28,12 @@ public class AlgoritmoGenetico {
 	TipoCruce tipo_cruce;
 	int tamPoblacion, numGeneraciones, numGenes, generacionActual;
 	double probabilidadCruce, probabilidadMutacion, probabilidadUniforme, precision, elitismo;
-	
+	boolean booleanElite;
 	//Valores para escribir la grafica.
 	double[] mediasGeneracion;
 	double[] mejoresGeneracion;
 	double[] mejoresAbsolutos;
-	
+
 	double mediaGeneracion;
 	double mejorGeneracion;
 	double mejorAbsoluto;
@@ -61,6 +61,8 @@ public class AlgoritmoGenetico {
 		
 		this.poblacion = new Cromosoma[tPob];
 		this.elite = new ArrayList<Cromosoma>();
+		
+		this.booleanElite = this.elitismo == 0.0 ? false : true;
 		
 		this.mediasGeneracion = new double[nGeneracs];
 		this.mejoresGeneracion = new double[nGeneracs];
@@ -280,6 +282,11 @@ public class AlgoritmoGenetico {
 			this.poblacion[i] = elite.get(i);
 		}
 	}
+	public int getNumElites() {
+		
+			return (int) Math.ceil(this.getTamPoblacion() * this.elitismo / 100);
+		
+	}
 	
 	/**
 	 * Devuelve true si se cumple la condicion de
@@ -329,7 +336,9 @@ public class AlgoritmoGenetico {
     }
 
 	
-
+    public boolean getBooleanElite() {
+    	return this.booleanElite;
+    }
     
     public int getTamPoblacion() {
     	return this.tamPoblacion;
