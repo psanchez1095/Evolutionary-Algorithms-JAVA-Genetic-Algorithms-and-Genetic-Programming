@@ -2,12 +2,14 @@ package algoritmoGenetico;
 
 import cruce.*;
 import funcion.*;
+import gen.GenBooleano;
 import mutacion.MutacionBooleana;
 import mutacion.MutacionReal;
 import cromosoma.Cromosoma;
 import reemplazo.Aleatorio;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import cromosoma.*;
 import seleccion.*;
@@ -62,7 +64,7 @@ public class AlgoritmoGenetico {
 		this.poblacion = new Cromosoma[tPob];
 		this.elite = new ArrayList<Cromosoma>();
 		
-		this.booleanElite = this.elitismo == 0.0 ? false : true;
+		this.booleanElite = this.elitismo == 0.0 ? false : true; // false en caso de que sea 0.0 y true en caso contrario
 		
 		this.mediasGeneracion = new double[nGeneracs];
 		this.mejoresGeneracion = new double[nGeneracs];
@@ -104,7 +106,7 @@ public class AlgoritmoGenetico {
 	
 	public double fitness(Cromosoma cromosoma) {
 		double valor = 0.0;
-		//cromosoma.calcularFenotipo();
+		cromosoma.calcularFenotipo();
 		double[] x = cromosoma.getFenotipo();
 		switch(this.funcion) {
 			case F1: 
@@ -147,7 +149,7 @@ public class AlgoritmoGenetico {
 			   (this.funcion != TipoFuncion.F1 && fitness < fitness_best))  
 			{
 				fitness_best = fitness; pos_fitness_best = i; }
-			sum_fitness += fitness;
+				sum_fitness += fitness;
 		}
 		double puntuacion = 0, puntuacion_acu = 0;
 		
@@ -165,7 +167,7 @@ public class AlgoritmoGenetico {
 			} 
 		} 
 		else if (elMejor.getFitness() > this.poblacion[pos_fitness_best].getFitness()) {
-			elMejor = this.poblacion[pos_fitness_best]; 
+			elMejor = this.duplicarCromosoma(this.poblacion[pos_fitness_best]); 
 		}
 		
 		
@@ -246,34 +248,54 @@ public class AlgoritmoGenetico {
 			break;
 		}
 		
-		for(int i = (int)this.elitismo*this.tamPoblacion; i < this.tamPoblacion; i++ ) {
+		
+		//for(int i = (int)(this.elitismo*this.tamPoblacion); i < this.tamPoblacion; i++ ) {
 			if(funcion == TipoFuncion.F4b) {
-				MutacionReal m = new MutacionReal(this.probabilidadMutacion, this.poblacion[i].getCromosomab());
-				m.mutar();
+				for (int p = 0; p < poblacion.length ; ++p) {
+		    		for (int i = 0; i < numGenes; i++) {
+		            	for (int j = 0; j < this.poblacion[i].getCromosomab().get(i).getAlelo().length-1; ++j) {
+		            		double valor = Math.random();
+		            		if (valor <= this.probabilidadMutacion) {
+		            			poblacion[p].getCromosomab().get(i).setAleloExct(
+		            					poblacion[p].getCromosomab().get(i).getAlelo()[j+1], j);
+		                	}
+		            	}
+		            }
+		    	}
 			}else {
-				MutacionBooleana m = new MutacionBooleana(this.probabilidadMutacion, this.poblacion[i].getCromosoma());
-				m.mutar();
-			}
-		}		
+				for (int p = 0; p < poblacion.length ; ++p) {
+		    		for (int i = 0; i < numGenes; i++) {
+		            	for (int j = 0; j < this.poblacion[i].getLongitudes()[i]-1; ++j) {
+		            		double valor = Math.random();
+		            		if (valor <= this.probabilidadMutacion) {
+		            			if (poblacion[p].getCromosoma().get(i).getAlelo()[j])
+		            				poblacion[p].getCromosoma().get(i).setAleloExct(false, j);
+		            			else
+		            				poblacion[p].getCromosoma().get(i).setAleloExct(true, j);
+		                	}
+		            	}
+		            }
+		    	}
+				}
+		//}		
 	}
 	
 	public void seleccionaElite() {
     	int num_elites = (int) (this.tamPoblacion * this.elitismo);
     	if (num_elites > this.tamPoblacion) num_elites = this.tamPoblacion;
-    	if (num_elites != this.tamPoblacion) {
-    		this.ordenarPoblacion(0, this.tamPoblacion-1);
-        	this.elite.clear();
+    	this.ordenarPoblacion(0, this.tamPoblacion-1);
+    	this.elite.clear();
 
-            if (this.funcion == TipoFuncion.F1) {
-                for (int i = 1 ; i <= num_elites; i++)
-                        this.elite.add(duplicarCromosoma(this.poblacion[this.tamPoblacion-i]));
-            }
+        if (this.funcion == TipoFuncion.F1) {
+            for (int i = 1 ; i <= num_elites; i++)
+                    this.elite.add(duplicarCromosoma(this.poblacion[this.tamPoblacion-i]));
+        }
 
-            else {
-                for (int i = 0 ; i < num_elites; i++)
-                        this.elite.add(duplicarCromosoma(this.poblacion[i]));
-            }
-    	}
+        else {
+            for (int i = 0 ; i < num_elites; i++)
+                    this.elite.add(duplicarCromosoma(this.poblacion[i]));
+        }    	
+    	
     	
 	}
 	
@@ -412,6 +434,49 @@ public class AlgoritmoGenetico {
 	                
 	    	return nuevo;
 	    }
+	
+		
+		public void incluyeElite2(Cromosoma[] elite) {
+			
+			// Buscamos los peores
+			double[] aptitudes = new double[this.tamPoblacion];
+			
+			// Actualizamos el array de aptitudes con el fitness de cada individuo;
+			for (int i = 0; i < aptitudes.length; i++) {
+				aptitudes[i] = this.poblacion[i].getFitness();
+			}
+			
+			// Ordenador de mayor a menor
+			Arrays.sort(aptitudes);
+
+			// Para las funciones donde se tenga que maximizar el valor
+			if (this.getFuncion() == TipoFuncion.F1){
+				for (int i = 0; i < this.getNumElites(); i++) {
+					boolean encontrado = false;
+					for (int j = 0; j < this.getTamPoblacion(); j++) {
+						if (!encontrado && aptitudes[i] == this.poblacion[j].getFitness()) {
+							this.poblacion[j] = elite[i];
+							encontrado = true;
+						}
+					}
+				}
+			}
+			// Para las funciones donde se tenga que minimizar el valor
+			else {
+				for (int i = 0; i < this.getNumElites(); i++) {
+					boolean encontrado = false;
+					for (int j = 0; j < this.getTamPoblacion(); j++) {
+						if (!encontrado && aptitudes[aptitudes.length - 1 - i] == this.poblacion[j].getFitness()) {
+							this.poblacion[j] = elite[i];
+							encontrado = true;
+						}
+					}
+				}
+			}
+			
+			
+		}
+
 
 
 }

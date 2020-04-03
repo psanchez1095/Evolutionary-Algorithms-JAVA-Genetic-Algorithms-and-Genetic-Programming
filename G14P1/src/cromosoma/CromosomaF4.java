@@ -41,11 +41,13 @@ public class CromosomaF4 extends Cromosoma {
 		boolean[][] x = new boolean[numGenes][Math.min(longitudes[0],longitudes[1])];
 		
 		for(int i = 0; i < numGenes; i++) { 
-			for(int j = 0; j < longitudes[0]; j++) { 
+			for(int j = 0; j < longitudes[i]; j++) { 
 				
 				x[i][j] = this.cromosoma.get(i).getAlelo()[j]; 
 				} 
 			}
+		
+		
 		
 		
 		for(int i = 0; i < numGenes; i++) {

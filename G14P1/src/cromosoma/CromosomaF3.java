@@ -12,7 +12,7 @@ public class CromosomaF3 extends Cromosoma{
 		this.cromosoma = new ArrayList<GenBooleano>(); 
 		this.numGenes = 2;
 		this.min = -10.0;
-		this.max = 10.8;
+		this.max = 10.0;
 		this.precision = precision;
 		calcularLongitudes();
 		for(int i = 0; i < this.numGenes; i++) {

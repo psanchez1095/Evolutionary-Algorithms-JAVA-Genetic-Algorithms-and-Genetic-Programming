@@ -19,7 +19,7 @@ public class MutacionReal {
         for (int i = 0; i < this.cromosoma.size(); i++) {
         	for (int j = 0; j < this.cromosoma.get(i).getAlelo().length-1; ++j) {
         		double valor = Math.random();
-        		if (valor <= this.probMutacion) {
+        		if (valor < this.probMutacion) {
         			this.cromosoma.get(i).setAleloExct(
         					this.cromosoma.get(i).getAlelo()[j+1], j);
             	}

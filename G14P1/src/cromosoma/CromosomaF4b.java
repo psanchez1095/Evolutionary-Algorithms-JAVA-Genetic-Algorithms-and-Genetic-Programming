@@ -50,9 +50,10 @@ public class CromosomaF4b extends Cromosoma {
 //		for(int i = 0; i < numGenes; i++) {
 //			fenotipo[i] = min + bin2dec(x[i]) * (max - min) / (Math.pow(2, longitudes[0]) - 1);
 //		}
-		double acum = 0;
+		double acum = 0.0;
 		for (int i = 0; i < numGenes; i++) {
 			for (int j = 0; j < longitudes[i]; ++j) {
+				
 				acum += this.cromosomab.get(i).getAlelo()[j];
 			}
 			fenotipo[i] = (acum/longitudes[i]);
@@ -66,18 +67,14 @@ public class CromosomaF4b extends Cromosoma {
 		 Random rand = new Random();
 	        double[] alelo = new double[longitud];
 	        for(int i = 0; i < longitud; i++) {
-	        	alelo[i] = min + (max - min) * rand.nextDouble();
+	        	alelo[i] = (Math.random()*max);
 	        	}
 	        
 	        return alelo;
 	}
 
 	
-	public Double generarGenRandom(int longitud) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 }
 
 

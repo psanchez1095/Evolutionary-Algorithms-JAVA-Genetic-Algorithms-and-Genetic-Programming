@@ -28,7 +28,7 @@ public class MonopuntoReal {
 		//seleccionamos los cromosomas a cruzar.
 		for(int i = 0; i < this.tamPoblacion; i++) {
 			double aleatorio = Math.random();
-			if(aleatorio < this.probCruce && i > elit) { progenitores[i] = true;}
+			if(aleatorio < this.probCruce && i >= elit) { progenitores[i] = true;}
 			else progenitores[i] = false;
 		}
 		

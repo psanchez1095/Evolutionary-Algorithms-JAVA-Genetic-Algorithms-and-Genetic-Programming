@@ -2,30 +2,36 @@ package mutacion;
 
 import java.util.ArrayList;
 
+import cromosoma.Cromosoma;
 import gen.GenBooleano;
 
 public class MutacionBooleana {
 	
-	ArrayList<GenBooleano> cromosoma;
+	 
 	double probMutacion;
+	int numGenes;
+	int[] longitudes;
 	
-	public MutacionBooleana(double probMutacion, ArrayList<GenBooleano> gens) {
+	public MutacionBooleana(double probMutacion, int numGenes, int[] longitudes) {
 		this.probMutacion = probMutacion;
-		this.cromosoma = gens;
+		this.numGenes = numGenes;
+		this.longitudes = longitudes;
 	}
 	
-    public void mutar() { 
+    public void mutar(Cromosoma[] poblacion) { 
        
-        for (int i = 0; i < this.cromosoma.size(); i++) {
-        	for (int j = 0; j < this.cromosoma.get(i).getAlelo().length; ++j) {
-        		double valor = Math.random();
-        		if (valor <= this.probMutacion) {
-        			if (this.cromosoma.get(i).getAlelo()[j]) 
-        				this.cromosoma.get(i).setAleloExct(false, j);
-        			else
-        				this.cromosoma.get(i).setAleloExct(true, j);
+    	for (int p = 0; p < poblacion.length ; ++p) {
+    		for (int i = 0; i < numGenes; i++) {
+            	for (int j = 0; j < longitudes[i]-1; ++j) {
+            		double valor = Math.random();
+            		if (valor < this.probMutacion) {
+            			if (poblacion[p].getCromosoma().get(i).getAlelo()[j])
+            				poblacion[p].getCromosoma().get(i).setAleloExct(false, j);
+            			else
+            				poblacion[p].getCromosoma().get(i).setAleloExct(true, j);
+                	}
             	}
-        	}
-        }
+            }
+    	}
     }
 }
